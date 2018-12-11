@@ -21,6 +21,6 @@
     "test": "tree-sitter test && script/parse-examples",
     "test-windows": "tree-sitter test"
   },
-  "repository": "https://github.com/tree-sitter/tree-sitter-python"
+  "repository": "https://github.com/maerson/tree-sitter-mal"
 
 }
