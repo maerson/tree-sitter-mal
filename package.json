@@ -1,6 +1,6 @@
 {
   "name": "tree-sitter-mal",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Mal grammar for tree-sitter",
   "main": "index.js",
   "keywords": [
@@ -9,7 +9,6 @@
   ],
   "author": "tcui",
   "license": "MIT",
-  "gypfile": true,
   "dependencies": {
     "nan": "^2.11.1"
   },
@@ -18,7 +17,7 @@
   },
   "scripts": {
     "build": "tree-sitter generate && node-gyp build",
-    "test": "tree-sitter test && script/parse-examples",
+    "test": "tree-sitter test ",
     "test-windows": "tree-sitter test"
   },
   "repository": "https://github.com/maerson/tree-sitter-mal"
