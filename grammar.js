@@ -1,5 +1,5 @@
 module.exports = grammar({
-    name: 'mal',
+  name: 'mal',
 
   extras: $ => [
     //$.comment,
@@ -20,10 +20,11 @@ module.exports = grammar({
   rules: {
 
     // Document      ::= (Header?,Preamble?,Section*)
-    module: $ => seq(
-      optional($.doc_header),
+    module: $ => //seq(
+      //optional($.doc_header),
       repeat($.doc_section)
-    ),
+      //)
+      ,
 
     // Header        ::= (Title,(AuthorInfo,RevisionInfo?)?)
     // AuthorInfo    ::= (FirstName,(MiddleName?,LastName)?,EmailAddress?)
@@ -34,45 +35,83 @@ module.exports = grammar({
     //   Joe Bloggs <jbloggs@mymail.com>
     //   v2.0, February 2003:
     //   Rewritten for version 2 release.
-    doc_header: $ => seq(
-        $.section_title
-    ),
+    //doc_header: $ => seq(
+    //    $.section_title
+    //),
 
     // Section       ::= (Title,SectionBody?,(Section)*)
     // SectionBody   ::= ((BlockTitle?,Block)|BlockMacro)+
     // Block         ::= (Paragraph|DelimitedBlock|List|Table)
     doc_section: $ => seq(
-       $.section_title,
-       $.section_body
+      prec.left(2, $.section_title),
+      prec.left(1, repeat1($.section_body))
     ),
 
     // Title ::= word+ , "^^^[\^o]*"
     // example:
     // Level One Section Title
     // ^^^^^^^^^^^^^^^^^^^^^^^^
-    section_title: $ => seq(
-      /[^\r\n]+/,$._newline,
-      /[\^]{5}[\^o]*/,$._newline
-    ),
+    section_title: $ => prec(2, seq(
+      repeat1($.identifier),
+      $._newline,
+      /[\^]{5}[\^o]*/,
+      $._newline
+    )),
 
-    section_body: $ => repeat1(
-        seq(
-          choice(
-            $.identifier,
-            $.string,
-            $.integer,
-            $.float
-          ),
-          $._newline
-        )
-    ),
+    //
+
+    section_body: $ =>
+      repeat(body_item),
+
+    body_item: $ =>
+      choice(paragraph,
+        delim_block
+      ),
+
+    paragraph: $ => ,
+
+    delim_block: $ =>
+      choice(
+        //sidebar_block ,
+        //comment_block,
+        fenced_block,
+        example_block,
+        listing_block,
+        //literal_block,
+        //pass_block,
+        //verse_block,
+        //table_block,
+        //anon_block
+      ),
+
+    fenced_block: $ =>
+
+      ,
+
+    example_block: $ =>
+
+      ,
+
+    listing_block: $ =>
+
+      ,
+
+    //  seq(
+    //    choice(
+    //      $.identifier,
+    //      $.string,
+    //      $.integer,
+    //      $.float
+    //    ),
+    //    $._newline
+    //  ),
 
     // Literals
     // string, number, id
 
     string: $ => seq(
       alias($._string_start, '"'),
-      repeat(choice(/*$.interpolation,*/ $.escape_sequence, $._string_content)),
+      repeat(choice( /*$.interpolation,*/ $.escape_sequence, $._string_content)),
       alias($._string_end, '"')
     ),
 
@@ -136,3 +175,15 @@ module.exports = grammar({
 
   }
 });
+
+function sep1(rule, separator) {
+  return seq(rule, repeat(seq(separator, rule)));
+}
+
+function commaSep1(rule) {
+  return seq(rule, repeat(seq(',', rule)))
+}
+
+function commaSep(rule) {
+  return optional(commaSep1(rule))
+}

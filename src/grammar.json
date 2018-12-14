@@ -3,97 +3,56 @@
   "word": "identifier",
   "rules": {
     "module": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "doc_header"
-            },
-            {
-              "type": "BLANK"
-            }
-          ]
-        },
-        {
-          "type": "REPEAT",
-          "content": {
-            "type": "SYMBOL",
-            "name": "doc_section"
-          }
-        }
-      ]
-    },
-    "doc_header": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "section_title"
-        }
-      ]
+      "type": "REPEAT",
+      "content": {
+        "type": "SYMBOL",
+        "name": "doc_section"
+      }
     },
     "doc_section": {
       "type": "SEQ",
       "members": [
         {
-          "type": "SYMBOL",
-          "name": "section_title"
+          "type": "PREC_LEFT",
+          "value": 2,
+          "content": {
+            "type": "SYMBOL",
+            "name": "section_title"
+          }
         },
         {
-          "type": "SYMBOL",
-          "name": "section_body"
+          "type": "PREC_LEFT",
+          "value": 1,
+          "content": {
+            "type": "REPEAT1",
+            "content": {
+              "type": "SYMBOL",
+              "name": "section_body"
+            }
+          }
         }
       ]
     },
     "section_title": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "PATTERN",
-          "value": "[^\\r\\n]+"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "_newline"
-        },
-        {
-          "type": "PATTERN",
-          "value": "[\\^]{5}[\\^o]*"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "_newline"
-        }
-      ]
-    },
-    "section_body": {
-      "type": "REPEAT1",
+      "type": "PREC",
+      "value": 2,
       "content": {
         "type": "SEQ",
         "members": [
           {
-            "type": "CHOICE",
-            "members": [
-              {
-                "type": "SYMBOL",
-                "name": "identifier"
-              },
-              {
-                "type": "SYMBOL",
-                "name": "string"
-              },
-              {
-                "type": "SYMBOL",
-                "name": "integer"
-              },
-              {
-                "type": "SYMBOL",
-                "name": "float"
-              }
-            ]
+            "type": "REPEAT1",
+            "content": {
+              "type": "SYMBOL",
+              "name": "identifier"
+            }
+          },
+          {
+            "type": "SYMBOL",
+            "name": "_newline"
+          },
+          {
+            "type": "PATTERN",
+            "value": "[\\^]{5}[\\^o]*"
           },
           {
             "type": "SYMBOL",
@@ -101,6 +60,36 @@
           }
         ]
       }
+    },
+    "section_body": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "identifier"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "string"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "integer"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "float"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_newline"
+        }
+      ]
     },
     "string": {
       "type": "SEQ",
